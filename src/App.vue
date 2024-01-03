@@ -4,7 +4,6 @@
     <v-app-bar flat class="border-b">
       <v-app-bar-title>Ceyp Social</v-app-bar-title>
 
-
     </v-app-bar>
 
     <v-main>
@@ -17,7 +16,6 @@
 
             <v-card-title>
               <v-btn @click="isDialogOpen = true" variant="tonal" size="small" :ripple="false">Adicionar pessoa</v-btn>
-
               <v-dialog
                 v-model="isDialogOpen"
                 width="700px"
@@ -26,11 +24,12 @@
                   <v-card-title>Adicionar pessoa</v-card-title>
 
                   <v-card-text class="">
+
                     <v-row>
                       <v-col>
-                        <v-text-field variant="outlined"  label="Nome completo" :rules="nameRules"></v-text-field>
+                        <v-text-field v-model="nameInput" variant="outlined"  label="Nome completo" :rules="nameRules"></v-text-field>
                       </v-col>
-
+                      
                       <v-col>
                         <v-text-field
                           variant="outlined" 
@@ -73,20 +72,29 @@
                         <v-text-field variant="outlined" label="Endereço" placeholder="Bairro, lagradouro, número e referência" :rules="adressRules" ></v-text-field>
                       </v-col>
                     </v-row>
-                    
+
                   </v-card-text>
 
                   <v-card-actions>
+
                     <v-spacer></v-spacer>
                     <v-btn variant="text" @click="isDialogOpen = false">Cancelar</v-btn>
-                    <v-btn variant="tonal" color="success">Cadastrar</v-btn>
+                    <v-btn  @click="handleSubmit" variant="tonal" color="success">Cadastrar</v-btn>
                   </v-card-actions>
+
+
                 </v-card>
               </v-dialog>
             </v-card-title>
           </div>
         </v-card>
-        
+
+          <v-card>
+          <v-card-text>
+            <h1>{{ store.user.name }}</h1>
+          </v-card-text>
+        </v-card>
+
       </v-container>
     </v-main>
   </v-app>
@@ -94,9 +102,22 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useUserStore } from './store/user'
+
+const store = useUserStore()
+const nameInput = ref("")
+
+// store.user.name
+// store.user.email = 'ENIUM.MIGUEL@gmail.com 
+// store.website
+// store.changeName('Matthew')
+const handleSubmit = () => {
+  store.changeName(nameInput.value)
+  nameInput.value = ""
+}
 
 const isDialogOpen = ref(false)
-const dateRules = [
+  const dateRules = [ 
   value => {
     if (value) {
       return true
@@ -105,8 +126,8 @@ const dateRules = [
     return 'A data é obrigatório';
   },
 
-];
-const sexRules = [
+ ];
+ const sexRules = [
   value => {
     if (value) {
       return true
@@ -115,8 +136,8 @@ const sexRules = [
     return 'O sexo é obrigatório';
   },
 
-];
-const nameRules = [
+ ];
+ const nameRules = [
   value => {
     if (value) {
       return true
@@ -125,8 +146,8 @@ const nameRules = [
     return 'O nome é obrigatório';
   },
 
-];
-const phoneRules = [
+ ];
+ const phoneRules = [
   value => {
     if (value) {
       return true
@@ -135,8 +156,8 @@ const phoneRules = [
     return 'O celular é obrigatório';
   },
 
-];
-const adressRules = [
+ ];
+ const adressRules = [
   value => {
     if (value) {
       return true
@@ -145,13 +166,5 @@ const adressRules = [
     return 'O endereço é obrigatório';
   },
 
-];
-</script>
-
-
-
-
-
-
-
-
+ ];
+ </script>
