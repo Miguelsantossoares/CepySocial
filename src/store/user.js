@@ -8,6 +8,9 @@ defineStore("user", {
     actions: {
         createUser(user) {
         return  this.$state.users.push(user)
+        },
+        deleteUser(user) {
+            return this.$state.users.splice(user, 1)
         }
     },
     persist: true

@@ -1,21 +1,23 @@
 <template>
   <v-app theme="">
 
-    <v-app-bar flat class="border-b">
-      <v-app-bar-title>Ceyp Social</v-app-bar-title>
+    <v-app-bar flat class="my-5 border-b">
+    <v-app-bar-title>
+      <v-img class="mb-5 ml-5" :width="130" aspect-ratio="16/9" cover src="D:\Miguel\Repositório Ceyp\CeypSocial\src\assets/yvonne.png"></v-img>
+    </v-app-bar-title>
 
     </v-app-bar>
 
     <v-main>
       <v-container>
-        <h1 class="mb-6 text-brand">Cadastro da pessoa</h1>
+        <h1 class="mb-6 mt-6 text-brand">Cadastro da pessoa</h1>
 
         <v-card flat class="border mb-4">
           <div class="d-flex justify-space-between">
             <v-card-title>Cadastro</v-card-title>
 
             <v-card-title>
-              <v-btn @click="isDialogOpen = true" variant="tonal" size="small" :ripple="false">Adicionar pessoa</v-btn>
+              <v-btn class="ma-1" @click="isDialogOpen = true" variant="tonal" size="small" :ripple="false">Adicionar pessoa</v-btn>
               <v-dialog
                 v-model="isDialogOpen"
                 width="700px"
@@ -122,21 +124,36 @@
               <thead>
                 <tr>
                   <th class="text-left">
-                    Name
+                    Nome completo
                   </th>
                   <th class="text-left">
                     Data de nascimento
+                  </th>
+                  <th class="text-left">
+                    Celular
+                  </th>
+                  <th>
+
                   </th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="item in users"
-                  :key="item.name"
+                  v-for="item, index in users"
+                  :key="index"
                 >
-                  <td>{{ item.name }}</td>
+                  <td>{{ item.name }}</td> 
                   <td>{{ item.birth }}</td>
+                  <td>{{ item.phone }}</td>
+                  <v-col class="mt-1">
+                    <v-btn class="mr-3" color="error" type="buttom" @click="deleteUser(index)">Deletar</v-btn>
+                    <v-btn class="ml-3" color="info" type="buttom" @click="deleteUser(index)">Editar</v-btn>
+                  </v-col>
+ 
+                    
+
                 </tr>
+
               </tbody>
             </v-table>
           </v-card-text>
@@ -148,7 +165,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, } from 'vue';
 import { useUserStore } from './store/user'
 
 const store = useUserStore()
@@ -161,6 +178,10 @@ const handleSubmit = () => {
   store.createUser(data.value)
   data.value = {}
   isDialogOpen.value = false
+}
+
+const deleteUser = (id) => {
+  store.deleteUser(id);
 }
 
 const isDialogOpen = ref(false)
@@ -194,4 +215,5 @@ const isDialogOpen = ref(false)
   },
 
  ];
+
  </script>
