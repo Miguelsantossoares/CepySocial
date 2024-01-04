@@ -20,6 +20,7 @@
                 v-model="isDialogOpen"
                 width="700px"
               >
+              <form @submit.prevent="handleSubmit">
                 <v-card >
                   <v-card-title>Adicionar pessoa</v-card-title>
 
@@ -27,24 +28,35 @@
 
                     <v-row>
                       <v-col>
-                        <v-text-field v-model="nameInput" variant="outlined"  label="Nome completo" :rules="nameRules"></v-text-field>
+                        <v-text-field
+                        v-model="data.name"
+                        variant="outlined" 
+                        label="Nome completo"
+                        :rules="nameRules"
+                        required
+                        >
+                      </v-text-field>
                       </v-col>
                       
                       <v-col>
                         <v-text-field
+                          v-model="data.birth"
                           variant="outlined" 
                           label="Data de nascimento"
                           placeholder="00/00/0000"
                           :rules="dateRules"
+                          required
                         ></v-text-field>
                       </v-col>
 
                       <v-col>
                         <v-select
+                          v-model="data.sex"
                           variant="outlined" 
                           label="Sexo"
                           :items="['Masculino', 'Feminino']"
                           :rules="sexRules"
+                          required
                         ></v-select>
                       </v-col>
                     </v-row>
@@ -52,6 +64,7 @@
                     <v-row>
                       <v-col>
                         <v-select
+                          v-model="data.color"
                            variant="outlined" 
                            label="Cor"
                            :items="['Branco', 'Pardo', 'Negro']">
@@ -59,31 +72,43 @@
                       </v-col>
 
                       <v-col>
-                        <v-text-field variant="outlined" :counter="9" label="Celular" :rules="phoneRules"></v-text-field>
+                        <v-text-field v-model="data.phone" variant="outlined" :counter="9" label="Celular" :rules="phoneRules"></v-text-field>
                       </v-col>
 
                       <v-col>
-                        <v-checkbox label="WhatsApp"></v-checkbox>
+                        <v-checkbox v-model="data.whatsapp" label="WhatsApp"></v-checkbox>
                       </v-col>
                     </v-row> 
 
-                    <v-row>
-                      <v-col>
-                        <v-text-field variant="outlined" label="Endereço" placeholder="Bairro, lagradouro, número e referência" :rules="adressRules" ></v-text-field>
-                      </v-col>
-                    </v-row>
+                    
+                      <v-row class="mx-0">
+                          <v-text-field v-model="data.address" variant="outlined" label="Bairro" :rules="bairroRules" ></v-text-field>
+                      </v-row>
+
+                      <v-row class="mx-0">
+                          <v-text-field v-model="data.lagradouro" variant="outlined" label="lagradouro" :rules="lagradouroRules" ></v-text-field>
+                      </v-row>
+
+                      <v-row class="mx-0">
+                          <v-text-field v-model="data.number" variant="outlined" label="Número" :rules="numeroRules" ></v-text-field>
+                      </v-row>
+
+                      <v-row class="mx-0">
+                          <v-text-field v-model="data.reference" variant="outlined" label="Referência" :rules="referenciaRules" ></v-text-field>
+                      </v-row>
+                    
 
                   </v-card-text>
 
                   <v-card-actions>
 
                     <v-spacer></v-spacer>
-                    <v-btn variant="text" @click="isDialogOpen = false">Cancelar</v-btn>
-                    <v-btn  @click="handleSubmit" variant="tonal" color="success">Cadastrar</v-btn>
+                    <v-btn class="mr-6 mb-2" variant="text" @click="isDialogOpen = false">Cancelar</v-btn>
+                    <v-btn class="mr-6 mb-2" type="submit" variant="tonal" color="success">Cadastrar</v-btn>
                   </v-card-actions>
 
-
                 </v-card>
+              </form>
               </v-dialog>
             </v-card-title>
           </div>
@@ -91,7 +116,29 @@
 
           <v-card>
           <v-card-text>
-            <h1>{{ store.user.name }}</h1>
+            <h1>Usuários</h1>
+
+            <v-table>
+              <thead>
+                <tr>
+                  <th class="text-left">
+                    Name
+                  </th>
+                  <th class="text-left">
+                    Data de nascimento
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="item in users"
+                  :key="item.name"
+                >
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.birth }}</td>
+                </tr>
+              </tbody>
+            </v-table>
           </v-card-text>
         </v-card>
 
@@ -101,19 +148,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useUserStore } from './store/user'
 
 const store = useUserStore()
-const nameInput = ref("")
+const data = ref({})
+const users = computed(() => {
+  return store.$state.users
+})
 
-// store.user.name
-// store.user.email = 'ENIUM.MIGUEL@gmail.com 
-// store.website
-// store.changeName('Matthew')
 const handleSubmit = () => {
-  store.changeName(nameInput.value)
-  nameInput.value = ""
+  store.createUser(data.value)
+  data.value = {}
+  isDialogOpen.value = false
 }
 
 const isDialogOpen = ref(false)
@@ -144,26 +191,6 @@ const isDialogOpen = ref(false)
     }
 
     return 'O nome é obrigatório';
-  },
-
- ];
- const phoneRules = [
-  value => {
-    if (value) {
-      return true
-    }
-
-    return 'O celular é obrigatório';
-  },
-
- ];
- const adressRules = [
-  value => {
-    if (value) {
-      return true
-    }
-
-    return 'O endereço é obrigatório';
   },
 
  ];
